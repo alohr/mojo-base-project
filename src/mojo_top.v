@@ -17,7 +17,8 @@ module mojo_top(
     // Serial connections
     input avr_tx, // AVR Tx => FPGA Rx
     output avr_rx, // AVR Rx => FPGA Tx
-    input avr_rx_busy // AVR Rx buffer full
+    input avr_rx_busy, // AVR Rx buffer full
+	 input[4:0] io_button
     );
 
 wire rst = ~rst_n; // make reset active high
@@ -27,6 +28,14 @@ assign spi_miso = 1'bz;
 assign avr_rx = 1'bz;
 assign spi_channel = 4'bzzzz;
 
-assign led = 8'b0;
+assign led[7:3] = 7'b0;
+assign led[1] = io_button[0];
+assign led[2] = io_button[1];
+
+blinker awesome_blinker(
+	.clk(clk),
+	.rst(rst),
+	.blink(led[0])
+	);
 
 endmodule
